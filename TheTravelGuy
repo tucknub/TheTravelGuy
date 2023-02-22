@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Travel Recommendations</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+	<nav>
+		<ul>
+			<li><a href="#">Home</a></li>
+			<li><a href="#">Destinations</a>
+				<ul>
+					<li><a href="#">North America</a></li>
+					<li><a href="#">Europe</a></li>
+					<li><a href="#">Asia</a></li>
+					<li><a href="#">Australia</a></li>
+				</ul>
+			</li>
+			<li><a href="#">Activities</a>
+				<ul>
+					<li><a href="#">Outdoor</a></li>
+					<li><a href="#">Indoor</a></li>
+					<li><a href="#">Cultural</a></li>
+				</ul>
+			</li>
+			<li><a href="#">Restaurants</a></li>
+			<li><a href="#">Hotels</a></li>
+			<li><a href="#">About Us</a></li>
+			<li><a href="#">Contact Us</a></li>
+		</ul>
+	</nav>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="script.js"></script>
+
+</body>
+</html>
+
+style.css:
+nav {
+	background-color: #333;
+	overflow: hidden;
+}
+
+nav ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+nav ul li {
+	float: left;
+	position: relative;
+}
+
+nav ul li a {
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 18px;
+}
+
+nav ul li:hover > a {
+	background-color: #ddd;
+	color: black;
+}
+
+nav ul li ul {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	background-color: #f9f9f9;
+	min-width: 160px;
+}
+
+nav ul li ul li {
+	float: none;
+}
+
+nav ul li ul li a {
+	padding: 12px 16px;
+	color: #333;
+	font-size: 16px;
+}
+
+nav ul li:hover > ul {
+	display: block;
+}
+
+script.js:
+$(document).ready(function() {
+	// Add active class to current page
+	$("nav a").each(function() {
+		if ($(this).attr("href") == window.location.pathname) {
+			$(this).addClass("active");
+		}
+	});
+});
+
+$(document).ready(function() {
+    $("nav a").click(function(event) {
+        event.preventDefault(); // Prevent default behavior of clicking a link
+        var url = $(this).attr("href");
+        var text = $(this).text();
+        var data = { "url": url, "text": text };
+
+        // Send data to server to get response from ChatGPT
+        $.ajax({
+            url: "/chatgpt",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(response) {
+                // Display response from ChatGPT
+                alert(response);
+            },
+            error: function(xhr, status, error) {
+                // Display error message
+                alert("Error: " + error);
+            }
+        });
+    });
+});
+
+app.py:
+from flask import Flask, request, render_template
+import openai
